@@ -77,12 +77,12 @@ export default class GoTrue {
     return this._request('/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: {
+      body: JSON.stringify({
         grant_type: "password",
         username: email,
         password,
         captcha_token: token
-      },
+      }),
       toAuth: true
     }).then((response) => {
       User.removeSavedSession();
