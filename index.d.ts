@@ -10,6 +10,7 @@ declare class Admin {
 
 export interface GoTrueInit {
     APIUrl?: string;
+    AUTHUrl?: string;
     audience?: string;
     setCookie?: boolean;
 }
