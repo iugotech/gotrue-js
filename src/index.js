@@ -74,7 +74,7 @@ export default class GoTrue {
 
   loginWithCaptcha(email, password, token, remember) {
     this._setRememberHeaders(remember);
-    return this._request('/login', {
+    return this._request('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
