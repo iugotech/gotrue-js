@@ -89,7 +89,7 @@ export default class GoTrue {
         User.removeSavedSession();
         return this.createUser(response.data, remember);
       } else {
-        throw new TypeError(response.message);
+        throw new Error(response.message);
       }
     });
   }
