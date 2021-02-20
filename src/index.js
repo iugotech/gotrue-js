@@ -85,8 +85,12 @@ export default class GoTrue {
       }),
       toAuth: true
     }).then((response) => {
-      User.removeSavedSession();
-      return this.createUser(response, remember);
+      if(response.success){
+        User.removeSavedSession();
+        return this.createUser(response.data, remember);
+      } else {
+        throw new TypeError(response.message);
+      }
     });
   }
 
