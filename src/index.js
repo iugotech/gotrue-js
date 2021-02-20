@@ -6,7 +6,7 @@ const HTTPRegexp = /^http:\/\//;
 const defaultApiURL = `/.netlify/identity`;
 
 export default class GoTrue {
-  constructor({ APIUrl = defaultApiURL, audience = '', setCookie = false } = {}) {
+  constructor({ APIUrl = defaultApiURL, AUTHUrl = '', audience = '', setCookie = false } = {}) {
     if (HTTPRegexp.test(APIUrl)) {
       console.warn(
         'Warning:\n\nDO NOT USE HTTP IN PRODUCTION FOR GOTRUE EVER!\nGoTrue REQUIRES HTTPS to work securely.',
@@ -20,6 +20,7 @@ export default class GoTrue {
     this.setCookie = setCookie;
 
     this.api = new API(APIUrl);
+    this.apiAuth = new API(AUTHUrl);
   }
 
   async _request(path, options = {}) {
@@ -29,7 +30,11 @@ export default class GoTrue {
       options.headers['X-JWT-AUD'] = aud;
     }
     try {
-      return await this.api.request(path, options);
+      if(!options.toAuth){
+        return await this.api.request(path, options);
+      } else {
+        return await this.apiAuth.request(path, options);
+      }
     } catch (error) {
       if (error instanceof JSONHTTPError && error.json) {
         if (error.json.msg) {
@@ -61,6 +66,24 @@ export default class GoTrue {
       body: `grant_type=password&username=${encodeURIComponent(
         email,
       )}&password=${encodeURIComponent(password)}`,
+    }).then((response) => {
+      User.removeSavedSession();
+      return this.createUser(response, remember);
+    });
+  }
+
+  loginWithCaptcha(email, password, token, remember) {
+    this._setRememberHeaders(remember);
+    return this._request('/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: {
+        grant_type: "password",
+        username: email,
+        password,
+        captcha_token: token
+      },
+      toAuth: true
     }).then((response) => {
       User.removeSavedSession();
       return this.createUser(response, remember);

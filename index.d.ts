@@ -23,6 +23,7 @@ declare class GoTrue {
     createUser(tokenResponse: any, remember?: boolean): Promise<User>;
     currentUser(): User | null;
     login(email: string, password: string, remember?: boolean): Promise<User>;
+    loginWithCaptcha(email: string, password: string, token: string, remember?: boolean): Promise<User>;
     loginExternalUrl(provider: string): string;
     recover(token: string, remember?: boolean): Promise<User>;
     requestPasswordRecovery(email: string): Promise<void>;
