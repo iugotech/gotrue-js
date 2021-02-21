@@ -82,17 +82,37 @@ export default class User {
       return refreshPromises[refresh_token];
     }
 
-    return (refreshPromises[refresh_token] = this.api
-      .request('/token', {
+    return (refreshPromises[refresh_token] = this.api     
+      .request('/api/refreshToken', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `grant_type=refresh_token&refresh_token=${refresh_token}`,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          refresh_token: refresh_token,
+        }),
+        toAuth: true
       })
       .then((response) => {
-        delete refreshPromises[refresh_token];
-        this._processTokenResponse(response);
-        this._refreshSavedSession();
-        return this.token.access_token;
+
+        if(response.success){
+          delete refreshPromises[refresh_token];
+          this._processTokenResponse(response.data);
+          this._refreshSavedSession();
+          return this.token.access_token;
+        } else {
+          throw new Error(response.message);
+        }
+
+        //.request('/token', {
+        // method: 'POST',
+        // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        // body: `grant_type=refresh_token&refresh_token=${refresh_token}`,
+
+        // delete refreshPromises[refresh_token];
+        // this._processTokenResponse(response);
+        // this._refreshSavedSession();
+        // return this.token.access_token;
+
+        
       })
       // eslint-disable-next-line promise/prefer-await-to-callbacks
       .catch((error) => {
