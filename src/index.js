@@ -94,6 +94,26 @@ export default class GoTrue {
     });
   }
 
+  authorizeAzure(email, token, remember) {
+    this._setRememberHeaders(remember);
+    return this._request('/api/azurelogin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        azure_token: token
+      }),
+      toAuth: true
+    }).then((response) => {
+      if(response.success){
+        User.removeSavedSession();
+        return this.createUser(response.data, remember);
+      } else {
+        throw new Error(response.message);
+      }
+    });
+  }
+
   loginExternalUrl(provider) {
     return `${this.api.apiURL}/authorize?provider=${provider}`;
   }
