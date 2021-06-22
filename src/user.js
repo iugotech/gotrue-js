@@ -199,7 +199,7 @@ export default class User {
   }
 
   _saveSession() {
-    isBrowser() && localStorage.setItem(storageKey, JSON.stringify(this._details));
+    //isBrowser() && localStorage.setItem(storageKey, JSON.stringify(this._details));
     return this;
   }
 
