@@ -32,6 +32,7 @@ declare class GoTrue {
     settings(): Promise<Settings>;
     signup(email: string, password: string, data?: any): Promise<User>;
     verify(type: string, token: string, remember?: boolean): Promise<User>;
+    saveUser();
 }
 
 export interface Settings {
