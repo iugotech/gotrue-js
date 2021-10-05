@@ -21,6 +21,7 @@ export default class GoTrue {
 
     this.api = new API(APIUrl);
     this.apiAuth = new API(AUTHUrl);
+    this.userResponse = {};
   }
 
   async _request(path, options = {}) {
@@ -86,12 +87,18 @@ export default class GoTrue {
       toAuth: true
     }).then((response) => {
       if(response.success){
-        User.removeSavedSession();
-        return this.createUser(response.data, remember);
+        this.userResponse = response.data;
+        this.remember = remember;
+        return
       } else {
         throw new Error(response.message);
       }
     });
+  }
+  
+  saveUser() {
+    User.removeSavedSession();
+    return this.createUser(this.userResponse, this.remember); 
   }
 
   authorizeAzure(email, token, remember) {
