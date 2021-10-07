@@ -92,7 +92,7 @@ export default class GoTrue {
         //return
         
         User.removeSavedSession();
-        return this.createUser(this.userResponse, this.remember); 
+        return this.createUser(response.data, remember); 
         
       } else {
         throw new Error(response.message);
