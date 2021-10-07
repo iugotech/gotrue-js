@@ -87,9 +87,13 @@ export default class GoTrue {
       toAuth: true
     }).then((response) => {
       if(response.success){
-        this.userResponse = response.data;
-        this.remember = remember;
-        return
+        //this.userResponse = response.data;
+        //this.remember = remember;
+        //return
+        
+        User.removeSavedSession();
+        return this.createUser(this.userResponse, this.remember); 
+        
       } else {
         throw new Error(response.message);
       }
