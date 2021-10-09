@@ -25,6 +25,7 @@ declare class GoTrue {
     currentUser(): User | null;
     login(email: string, password: string, remember?: boolean): Promise<User>;
     loginWithCaptcha(email: string, password: string, token: string, remember?: boolean): Promise<User>;
+    loginWithCaptchaWithVerification(email: string, password: string, token: string, remember?: boolean): Promise<void>;
     authorizeAzure(email: string, token: string, remember?: boolean): Promise<User>;
     loginExternalUrl(provider: string): string;
     recover(token: string, remember?: boolean): Promise<User>;
