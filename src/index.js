@@ -100,6 +100,29 @@ export default class GoTrue {
     });
   }
   
+  loginWithCaptchaWithVerification(email, password, token, remember) {
+    this._setRememberHeaders(remember);
+    return this._request('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        grant_type: "password",
+        username: email,
+        password,
+        captcha_token: token
+      }),
+      toAuth: true
+    }).then((response) => {
+      if(response.success){
+        this.userResponse = response.data;
+        this.remember = remember;
+        return                
+      } else {
+        throw new Error(response.message);
+      }
+    });
+  }
+  
   saveUser() {
     User.removeSavedSession();
     return this.createUser(this.userResponse, this.remember); 
