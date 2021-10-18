@@ -163,6 +163,17 @@ export default class GoTrue {
       body: JSON.stringify({ email }),
     });
   }
+  
+  requestPasswordRecoveryWithCaptche(email, token) {
+    return this._request('/recover', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        email,
+        captcha_token: token
+      }),
+      toAuth: true
+    });
+  }
 
   recover(token, remember) {
     this._setRememberHeaders(remember);
