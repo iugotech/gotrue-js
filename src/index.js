@@ -165,7 +165,7 @@ export default class GoTrue {
   }
   
   requestPasswordRecoveryWithCaptche(email, token) {
-    return this._request('/recover', {
+    return this._request('/api/recover', {
       method: 'POST',
       body: JSON.stringify({ 
         email,
