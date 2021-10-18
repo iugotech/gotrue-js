@@ -30,6 +30,7 @@ declare class GoTrue {
     loginExternalUrl(provider: string): string;
     recover(token: string, remember?: boolean): Promise<User>;
     requestPasswordRecovery(email: string): Promise<void>;
+    requestPasswordRecoveryWithCaptche(email: string, token:string): Promise<void>;
     settings(): Promise<Settings>;
     signup(email: string, password: string, data?: any): Promise<User>;
     verify(type: string, token: string, remember?: boolean): Promise<User>;
