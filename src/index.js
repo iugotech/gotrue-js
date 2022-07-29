@@ -102,7 +102,7 @@ export default class GoTrue {
   
   loginWithCaptchaWithVerification(email, password, token, remember) {
     this._setRememberHeaders(remember);
-    return this._request('/api/login', {
+    return this._request('/api/loginForSmsVerification', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -114,7 +114,7 @@ export default class GoTrue {
       toAuth: true
     }).then((response) => {
       if(response.success){
-        this.userResponse = response.data;
+        // this.userResponse = response.data;
         this.remember = remember;
         return                
       } else {
@@ -126,6 +126,11 @@ export default class GoTrue {
   saveUser() {
     User.removeSavedSession();
     return this.createUser(this.userResponse, this.remember); 
+  }
+
+  saveUserWithData(user) {
+    User.removeSavedSession();
+    return this.createUser(user, this.remember); 
   }
 
   authorizeAzure(email, token, remember) {
