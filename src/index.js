@@ -116,7 +116,7 @@ export default class GoTrue {
       if(response.success){
         // this.userResponse = response.data;
         this.remember = remember;
-        return                
+        return response.data                
       } else {
         throw new Error(response.message);
       }
