@@ -36,6 +36,7 @@ declare class GoTrue {
     signup(email: string, password: string, data?: any): Promise<User>;
     verify(type: string, token: string, remember?: boolean): Promise<User>;
     saveUser();
+    saveUserWithData(user:User);
 }
 
 export interface Settings {
