@@ -122,6 +122,32 @@ export default class GoTrue {
       }
     });
   }
+
+  loginMobiliz(token, server_id, remember) {
+    this._setRememberHeaders(remember);
+    return this._request('/api/loginMB', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        grant_type: "password",
+        server_id,
+        token
+      }),
+      toAuth: true
+    }).then((response) => {
+      if(response.success){
+        //this.userResponse = response.data;
+        //this.remember = remember;
+        //return
+        
+        User.removeSavedSession();
+        return this.createUser(response.data, remember); 
+        
+      } else {
+        throw new Error(response.message);
+      }
+    });
+  }
   
   saveUser() {
     User.removeSavedSession();
