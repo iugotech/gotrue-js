@@ -231,6 +231,18 @@ export default class GoTrue {
     return this.verify('recovery', token, remember);
   }
 
+  resetPasswordOnRecovery(recoveryToken, captchaToken, password) {
+    return this._request('/api/resetPasswordOnRecovery', {
+      method: 'POST',
+      body: JSON.stringify({
+        recovery_token: recoveryToken,
+        captcha_token: captchaToken,
+        password
+      }),
+      toAuth: true
+    });
+  }
+
   acceptInvite(token, password, remember) {
     this._setRememberHeaders(remember);
     return this._request('/verify', {
