@@ -71,8 +71,15 @@ export default class User {
     return Promise.resolve(access_token);
   }
 
-  logout() {
-    return this._request('/logout', { method: 'POST' })
+  async logout() {
+    const token = await this.jwt();
+    return this._request('/api/logout', { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    })
       .then(this.clearSession.bind(this))
       .catch(this.clearSession.bind(this));
   }
@@ -211,6 +218,7 @@ export default class User {
     User.removeSavedSession();
     this.token = null;
     currentUser = null;
+    return true;
   }
 }
 
