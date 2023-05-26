@@ -257,7 +257,7 @@ export default class GoTrue {
 
   createUser(tokenResponse, remember = false) {
     this._setRememberHeaders(remember);
-    const user = new User(this.api, tokenResponse, this.audience);
+    const user = new User(this.api, this.apiAuth, tokenResponse, this.audience);
     return user.getUserData().then((userData) => {
       if (remember) {
         userData._saveSession();

@@ -11,9 +11,11 @@ const forbiddenSaveAttributes = { api: 1 };
 const isBrowser = () => typeof window !== 'undefined';
 
 export default class User {
-  constructor(api, tokenResponse, audience) {
+  constructor(api, apiAuth, tokenResponse, audience) {
     this.api = api;
+    this.apiAuth = apiAuth;
     this.url = api.apiURL;
+    this.urlAuth = apiAuth.apiURL;
     this.audience = audience;
     this._processTokenResponse(tokenResponse);
     currentUser = this;
@@ -72,13 +74,10 @@ export default class User {
   }
 
   async logout() {
-    const token = await this.jwt();
-    return this._request('/api/logout', { 
+    return this._request('/api/logout', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
+      toAuth: true,
     })
       .then(this.clearSession.bind(this))
       .catch(this.clearSession.bind(this));
@@ -137,9 +136,11 @@ export default class User {
       options.headers['X-JWT-AUD'] = aud;
     }
 
+    const apiToUse = options.toAuth ? this.apiAuth : this.api;
+
     try {
       const token = await this.jwt();
-      return await this.api.request(path, {
+      return await apiToUse.request(path, {
         headers: Object.assign(options.headers, {
           Authorization: `Bearer ${token}`,
         }),
