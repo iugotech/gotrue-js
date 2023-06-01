@@ -62,10 +62,10 @@ export interface Token {
 }
 
 export declare class User implements UserData {
-    constructor(api: any, tokenResponse: any, audience: string);
+    constructor(api: any, tokenResponse: any, audience: string, apiAuth: any);
 
     static removeSavedSession(): void;
-    static recoverSession(api: any): User | null;
+    static recoverSession(api: any, apiAuth: any): User | null;
 
     admin: Admin;
 
