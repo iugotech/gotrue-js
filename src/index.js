@@ -235,8 +235,8 @@ export default class GoTrue {
     return this._request('/api/resetPasswordOnRecovery', {
       method: 'POST',
       body: JSON.stringify({
-        recovery_token: recoveryToken,
-        captcha_token: captchaToken,
+        recoveryToken: recoveryToken,
+        recaptchaToken: captchaToken,
         password
       }),
       toAuth: true
@@ -257,7 +257,7 @@ export default class GoTrue {
 
   createUser(tokenResponse, remember = false) {
     this._setRememberHeaders(remember);
-    const user = new User(this.api, tokenResponse, this.audience);
+    const user = new User(this.api, tokenResponse, this.audience, this.apiAuth);
     return user.getUserData().then((userData) => {
       if (remember) {
         userData._saveSession();

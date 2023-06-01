@@ -11,9 +11,11 @@ const forbiddenSaveAttributes = { api: 1 };
 const isBrowser = () => typeof window !== 'undefined';
 
 export default class User {
-  constructor(api, tokenResponse, audience) {
+  constructor(api, tokenResponse, audience, apiAuth) {
     this.api = api;
+    this.apiAuth = apiAuth;
     this.url = api.apiURL;
+    this.urlAuth = apiAuth.apiURL;
     this.audience = audience;
     this._processTokenResponse(tokenResponse);
     currentUser = this;
@@ -23,7 +25,7 @@ export default class User {
     isBrowser() && localStorage.removeItem(storageKey);
   }
 
-  static recoverSession(apiInstance) {
+  static recoverSession(apiInstance, apiAuthInstance) {
     if (currentUser) {
       return currentUser;
     }
@@ -32,13 +34,15 @@ export default class User {
     if (json) {
       try {
         const data = JSON.parse(json);
-        const { url, token, audience } = data;
+        const { url, token, audience, urlAuth } = data;
         if (!url || !token) {
           return null;
         }
 
         const api = apiInstance || new API(url, {});
-        return new User(api, token, audience)._saveUserData(data, true);
+        const apiAuth = apiAuthInstance || new API(urlAuth, {});
+
+        return new User(api, token, audience, apiAuth)._saveUserData(data, true);
       } catch (error) {
         console.error(new Error(`Gotrue-js: Error recovering session: ${error}`));
         return null;
@@ -71,8 +75,17 @@ export default class User {
     return Promise.resolve(access_token);
   }
 
-  logout() {
-    return this._request('/logout', { method: 'POST' })
+  async logout(user_id) {
+    const token = await this.jwt();
+    return this._request('/api/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      toAuth: true,
+      body: JSON.stringify({
+        token: token,
+        user_id: user_id
+      }),
+    })
       .then(this.clearSession.bind(this))
       .catch(this.clearSession.bind(this));
   }
@@ -130,9 +143,11 @@ export default class User {
       options.headers['X-JWT-AUD'] = aud;
     }
 
+    const apiToUse = options.toAuth ? this.apiAuth : this.api;
+
     try {
       const token = await this.jwt();
-      return await this.api.request(path, {
+      return await apiToUse.request(path, {
         headers: Object.assign(options.headers, {
           Authorization: `Bearer ${token}`,
         }),
@@ -211,6 +226,7 @@ export default class User {
     User.removeSavedSession();
     this.token = null;
     currentUser = null;
+    return true;
   }
 }
 
