@@ -87,7 +87,7 @@ export declare class User implements UserData {
     clearSession(): void;
     getUserData(): Promise<UserData>;
     jwt(forceRefresh?: boolean): Promise<string>;
-    logout(): Promise<void>;
+    logout(user_id: string): Promise<void>;
     tokenDetails(): Token;
     update(attributes: any): Promise<User>;
 }
