@@ -34,6 +34,7 @@ export default class User {
     if (json) {
       try {
         const data = JSON.parse(json);
+        data.apiAuth = new API(data.apiAuth.apiURL, {...data.apiAuth})
         const { url, token, audience, urlAuth } = data;
         if (!url || !token) {
           return null;
