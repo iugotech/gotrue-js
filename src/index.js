@@ -254,13 +254,14 @@ export default class GoTrue {
     return this.verify('recovery', token, remember);
   }
 
-  resetPasswordOnRecovery(recoveryToken, captchaToken, password) {
+  resetPasswordOnRecovery(recoveryToken, captchaToken, password, date) {
     return this._request('/api/resetPasswordOnRecovery', {
       method: 'POST',
       body: JSON.stringify({
         recoveryToken: recoveryToken,
         recaptchaToken: captchaToken,
-        password
+        password,
+        date: date
       }),
       toAuth: true
     });
