@@ -33,7 +33,7 @@ declare class GoTrue {
     recover(token: string, remember?: boolean): Promise<User>;
     requestPasswordRecovery(email: string): Promise<void>;
     requestPasswordRecoveryWithCaptche(email: string, token: string): Promise<void>;
-    resetPasswordOnRecovery(recoveryToken: string, captchaToken: string, password: string): Promise<void>;
+    resetPasswordOnRecovery(recoveryToken: string, captchaToken: string, password: string, date: string): Promise<void>;
     settings(): Promise<Settings>;
     signup(email: string, password: string, data?: any): Promise<User>;
     verify(type: string, token: string, remember?: boolean): Promise<User>;
